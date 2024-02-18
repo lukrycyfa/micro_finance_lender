@@ -1,3 +1,6 @@
+# SMART_MICROFINANCE_LENDER
+- On this project is a Base example Lender Contract which could be implemented in a blockchain ecosystem where value is of essencence and urgency need to be attended to. Having implementations for gaining profits while satisfying clients urgents need with risks of loosing borrowed tokens at zero. Basically lending and paying back tokens from this move contract demands a lender to provide a sui token with a balance enough to cover a collateral wich is 20% plus the loned amount to guranty a paid back over a period of time at a fee in percentages. Assuming the Sui token tends gain vlaue in the market and the example usdt coin is a stable coin. and having other utilities and implementations for tranfers, keeping records of lenders, balances and more.
+
 ## Disclaimer: Use of Unaudited Code for Educational Purposes Only
 This code is provided strictly for educational purposes and has not undergone any formal security audit. 
 It may contain errors, vulnerabilities, or other issues that could pose risks to the integrity of your system or data.
@@ -13,105 +16,116 @@ Before using this code, it is recommended to consult with a qualified profession
 
 ## Setup
 
-### Prerequisites
-Before we proceed, we should install a couple of things. Also, if you are using a Windows machine, it's recommended to use WSL2.
+### Techstacks and Dependencies Required to Use or Test the Micro_finance_lender Contract.
 
-On Ubuntu/Debian/WSL2(Ubuntu):
-```
+- The setup procedure here covers installations on Ubuntu and Github Codespaces(Recommended) for simplycity. You could refer to the tutorial Setup section from [Sui DeepBook Tutorial](https://dacade.org/communities/sui/challenges/19885730-fb83-477a-b95b-4ab265b61438/learning-modules/c9e21ff5-e7b3-4583-b21c-00c7176c10cc) or [sui docs](https://docs.sui.io/guides/developer/getting-started/sui-install), for installation on other platforms. 
+
+#### Installation on Ubuntu/Github Codespaces:
+
+- To get started on Codespace follow this link to the repository [micro_finance_lender](https://github.com/lukrycyfa/micro_finance_lender) click on the "Code" button, navigating to the codespaces tab then select "Create codespace on main". to generate a new Codespace, pre-configured with everything you need to start testing the project.
+
+- Open a terminal
+
+- Make update's and install dependencies with the command below:
+```bash
 sudo apt update
 sudo apt install curl git-all cmake gcc libssl-dev pkg-config libclang-dev libpq-dev build-essential -y
 ```
-On MacOs:
-```
-brew install curl cmake git libpq
-```
-If you don't have `brew` installed, run this:
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+- Get the project from GitHub with the command below:
+```bash
+git clone https://github.com/lukrycyfa/micro_finance_lender.git
+cd micro_finance_lender
 ```
 
-Next, we need rust and cargo:
-```
+- Install rust and cargo with the command below:
+```bash
 curl https://sh.rustup.rs -sSf | sh
 ```
 
-### Install Sui
-If you are using Github codespaces, it's recommended to use pre-built binaries rather than building them from source.
-
-To download pre-built binaries, you should run `download-sui-binaries.sh` in the terminal. 
-This scripts takes three parameters (in this particular order) - `version`, `environment` and `os`:
-- sui version, for example `1.15.0`. You can lookup a more up-to-date version available here [SUI Github releases](https://github.com/MystenLabs/sui/releases).
-- `environment` - that's the environment that you are targeting, in our case it's `devnet`. Other available options are: `testnet` and `mainnet`.
-- `os` - name of the os. If you are using Github codespaces, put `ubuntu-x86_64`. Other available options are: `macos-arm64`, `macos-x86_64`, `ubuntu-x86_64`, `windows-x86_64` (not for WSL).
-
-To donwload SUI binaries for codespace, run this command:
+- Add the path below to env with this command:
+```bash
+source "$HOME/.cargo/env"
 ```
-./download-sui-binaries.sh "v1.15.0" "devnet" "ubuntu-x86_64"
-```
-and restart your terminal window.
 
-If you prefer to build the binaries from source, run this command in your terminal:
+- Verify installation with the command below:
+```bash
+rustc --version
 ```
+
+- Install Sui. Build from source (Recommended):
+    - first make the `download-sui-binaries.sh` file executable and install sui with the command below:
+```bash
+chmod u+x download-sui-binaries.sh
+./download-sui-binaries.sh "v1.18.0" "devnet" "ubuntu-x86_64"
+```
+
+- Restart the terminal and verify the installation:
+```bash
+sui --version
+```
+
+- Optionally you could download sui binaries and do a manual installation with the command below:
+```bash
 cargo install --locked --git https://github.com/MystenLabs/sui.git --branch devnet sui
 ```
-
-### Install dev tools (not required, might take a while when installin in codespaces)
-```
-cargo install --git https://github.com/move-language/move move-analyzer --branch sui-move --features "address32"
-
+- Verify installation
+```bash
+sui --version
 ```
 
-### Run a local network
-To run a local network with a pre-built binary (recommended way), run this command:
-```
+### Start a local network
+
+- You could start a local test validator with the pre-built installed binary(recommended) by issuing the command below:
+```bash
 RUST_LOG="off,sui_node=info" sui-test-validator
 ```
 
-Optionally, you can run it from sources.
-```
+- Optionally, you could start the validator from sources if you installed the sui binaries manually.
+```bash
 git clone --branch devnet https://github.com/MystenLabs/sui.git
-
 cd sui
-
 RUST_LOG="off,sui_node=info" cargo run --bin sui-test-validator
 ```
 
-### Install SUI Wallet (optionally)
-```
-https://chrome.google.com/webstore/detail/sui-wallet/opcgpfmipidbgpenhmajoajpbobppdil?hl=en-GB
-```
+### Build, Publish and Test the Contract.
 
-### Configure connectivity to a local node
-Once the local node is running (using `sui-test-validator`), you should the url of a local node - `http://127.0.0.1:9000` (or similar).
-Also, another url in the output is the url of a local faucet - `http://127.0.0.1:9123`.
+#### Create Addresses
 
-Next, we need to configure a local node. To initiate the configuration process, run this command in the terminal:
-```
-sui client active-address
-```
-The prompt should tell you that there is no configuration found:
-```
-Config file ["/home/codespace/.sui/sui_config/client.yaml"] doesn't exist, do you want to connect to a Sui Full node server [y/N]?
-```
-Type `y` and in the following prompts provide a full node url `http://127.0.0.1:9000` and a name for the config, for example, `localnet`.
+- To publish and  get a full test coverage of the contract we will be creating two address one for the publisher
+the other a test client account.
 
-On the last prompt you will be asked which key scheme to use, just pick the first one (`0` for `ed25519`).
+- Use the command below to generate a new address:
 
-After this, you should see the ouput with the wallet address and a mnemonic phrase to recover this wallet. You can save so later you can import this wallet into SUI Wallet.
-
-Additionally, you can create more addresses and to do so, follow the next section - `Create addresses`.
-
-
-### Create addresses
-For this tutorial we need two separate addresses. To create an address run this command in the terminal:
-```
+```bash
 sui client new-address ed25519
 ```
+- After running this command for the first time, you should see the following output:
+Config file ["/home/codespace/.sui/sui_config/client.yaml"] doesn't exist, do you want to connect to a Sui Full node server [y/N]?
+
+Type "y" and press Enter to proceed.
+
+After that, you should see the following output:
+
+Sui Full node server URL (Defaults to Sui Devnet if not specified):
+
+Type the Fullnode RPC URL from the previous section and press Enter to proceed.
+
+After that, you should see the following output:
+
+Environment alias for [http://127.0.0.1:9000] :
+
+Type "localnet" or any other name you want to use for the environment and press Enter to proceed.
+
+Finally, you should see another prompt as follows:
+
+Select key scheme to generate keypair (0 for ed25519, 1 for secp256k1, 2: for secp256r1):
+Type "0"
 where:
 - `ed25519` is the key scheme (other available options are: `ed25519`, `secp256k1`, `secp256r1`)
 
 And the output should be similar to this:
-```
+```bash
 ╭─────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ Created new keypair and saved it to keystore.                                                   │
 ├────────────────┬────────────────────────────────────────────────────────────────────────────────┤
@@ -120,171 +134,178 @@ And the output should be similar to this:
 │ recoveryPhrase │ lava perfect chef million beef mean drama guide achieve garden umbrella second │
 ╰────────────────┴────────────────────────────────────────────────────────────────────────────────╯
 ```
-Use `recoveryPhrase` words to import the address to the wallet app.
+- You could run the command again to generate a second address you would need for the test. 
+```bash
+sui client new-address ed25519
+```
 
+#### Get localnet SUI tokens
 
-### Get localnet SUI tokens
+- Use the command below to get sui token you would be needing for testing:
+```bash
+curl --location --request POST 'http://127.0.0.1:9123/gas' --header 'Content-Type: application/json' --data-raw '{
+"FixedAmountRequest": {"recipient": "<ADDRESS>"}}'
 ```
-curl --location --request POST 'http://127.0.0.1:9123/gas' --header 'Content-Type: application/json' \
---data-raw '{
-    "FixedAmountRequest": {
-        "recipient": "<ADDRESS>"
-    }
-}'
-```
-`<ADDRESS>` - replace this by the output of this command that returns the active address:
-```
+`<ADDRESS>`` - and repalce this value with any of the address you have genarated, do make sure to fund both address.
+
+- Use the command bellow to the get the current acive address
+```bash
 sui client active-address
 ```
 
-You can switch to another address by running this command:
-```
+- You can switch to the other genrated address by running this command:
+```bash
 sui client switch --address <ADDRESS>
 ```
-abd run the HTTP request to mint some SUI tokens to this account as well.
 
-Also, you can top up the balance via the wallet app. To do that, you need to import an account to the wallet.
 
-## Build and publish a smart contract
+#### Build and publish a smart contract
 
-### Build package
-To build tha package, you should run this command:
-```
+- Issue the command below to build the contarct:
+```bash
 sui move build
 ```
-
-If the package is built successfully, the next step is to publish the package:
-### Publish package
-```
+- After the succesfull build you could go ahead and publish the contract:
+```bash
 sui client publish --gas-budget 100000000 --json
 ```
-Here we do not specify the path to the package dir so it will use the current dir - `.`
+#### Testing The Contract. 
 
-After the contract is published we need to extract some object ids from the output. Here is the list of env variable that we source in the current shell and their values:
-- `PACKAGE_ID` - the id of the published package. The json path to it is `.objectChanges[].packageId`
-- `ORIGINAL_UPGRADE_CAP_ID` - the upgrade cap id that we might need if we find ourselves in the situation when we need to upgrade the contract. Path: `.objectChanges[].objectId` where `.objectChanges[].objectType` is  `0x2::package::UpgradeCap`
-- `SUI_FEE_COIN_ID` the id of the SUI coin that we are going to use to pay the fee for the pool creation. Take any from the output of this command: `sui client gas --json`
-- `ACCOUNT_ID1` - currently active address, assign the output of this command: `sui client active-address`. Repeat the same for the secondary account and assign the output to `ACCOUNT_ID1`
-- `CLOCK_OBJECT_ID` - the id of the `Clock` object, default to `0x6`
-- `BASE_COIN_TYPE` - the type of the SUI coin, default to `0x2::sui::SUI`
-- `QUOTE_COIN_TYPE` - the type of the quote coin that we deployed for the sake of this tutorial. The coin is `WBTC` in the `wbtc` module in the `$PACKAGE_ID` package. So the value will look like this: `<PACKAGE_ID>::wbtc::WBTC`
-- `WBTC_TREASURY_CAP_ID` it's the treasury cap id that is needed for token mint operations. In the publish output you should look for the object with `objectType` `0x2::coin::TreasuryCap<$PACKAGE_ID::wbtc::WBTC>` (replace `$PACKAGE_ID` with the actual package id) and this object also has `objectId` - that's the value that we are looking for.
+- After publishing the contract a json object would be returned to the console, there are a couple of values we will be needing to test our contract.
+- You could get access to these values on the json object with this path `.objectChanges[]` or just look for the `objectChanges` array on the json object and extract these values:
 
-## Interact with the contract
+- `PACKAGE_ID` - this would be the `packageId` of the published package. The json path to it is `.objectChanges[].type` = `published` we would need this for all function calls.
 
-### Create pool
+- `TREASURY_CAP_ID` - the `objectId` to the TreasuryCap object. would be on the json path where `.objectChanges[].objectType` = `0x2::coin::TreasuryCap<PACKAGE_ID::usdt::USDT>` we would need this each time we need to mint usdt tokens. 
 
-Now we create a pool:
-```
-sui client call --package $PACKAGE_ID  --module book --function new_pool --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --args $SUI_FEE_COIN_ID --gas-budget 10000000000 --json
-```
-After the pool is created, check the output and locate the object with the type `0xdee9::clob_v2::Pool<$BASE_COIN_TYPE, $QUOTE_COIN_TYPE>` (`$BASE_COIN_TYPE`, `$QUOTE_COIN_TYPE` - replace with the actual values) and assign the value from the `objectId` property to `$POOL_ID`.
+- `MGM_ACC_ID` - the `objectId` to the managementAccount object. would be on the json path where `.objectChanges[].objectType` = `PACKAGE_ID::smart_lender::ManagementAccount` we would need this for some function calls.
 
-In this case, the pool is created with the default values for `REFERENCE_TAKER_FEE_RATE` and `REFERENCE_MAKER_REBATE_RATE` where the former one is `2_500_000` (0.25%) and the latter one is `1_500_000` (0.15%).
+- `MGM_LOANREC_ID` - the `objectId` to the managementLoanRecord object. would be on the json path where `.objectChanges[].objectType` = `PACKAGE_ID::smart_lender::ManagementLoanRecord` we would need this for some function calls.
 
-In case you'd like to customize these values, you should use `create_customized_pool`:
-```
-public fun create_customized_pool<BaseAsset, QuoteAsset>(
-        tick_size: u64,
-        lot_size: u64,
-        taker_fee_rate: u64,
-        maker_rebate_rate: u64,
-        creation_fee: Coin<SUI>,
-        ctx: &mut TxContext,
-    )
-```
+- On publish a couple of usdt token would have been minted to the publishers account you could access the objectId below:
 
-### Create custodian account
-For limit orders we need to have custodian accounts (more details [here](https://docs.sui-deepbook.com/deepbook-sdk/trade-and-swap#2.1.2-create-custodian-account)):
-```
-sui client call --package $PACKAGE_ID  --module book --function new_custodian_account  --gas-budget 10000000000
-```
-In the publish output you should look for the object with `objectType` `0xdee9::custodian_v2::AccountCap` and assign the value `objectId` to the env variable `ACCOUNT1_CAP`.
-Repeat the same for the secondary account that we created previously (use `sui client switch --address <ADDRESS>`) and the output assign to ACCOUNT2_CAP.
+- `ACC1_USDT_COIN_ID` - the `objectId` to the minted USDT coin object would be on the json path where `.objectChanges[].objectType` = `0x2::coin::Coin<PACKAGE_ID::usdt::USDT>` we would need this to fund loans.
 
-### Mint WBTC token
-Now we need to mint WBTC tokens. Switch to the address that you've used to publish the contract and run this command to mint tokens:
-```
-sui client call --function mint --module wbtc --package $PACKAGE_ID  --args $WBTC_TREASURY_CAP_ID "10000000000" $ACCOUNT_ID1 --gas-budget 10000000 --json
-```
-Re-run the same command but change `ACCOUNT_ID1` to `ACCOUNT_ID2`.
-Check the output and look for an object with `objectType` that has a value like this `String("0x2::coin::Coin<$PACKAGE_ID::wbtc::WBTC>")` and get the value of `objectId` and assign it ot `ACCOUNT1_WBTC_OBJECT_ID`.
+- Make a call from the publishers account to fund loans.
 
-### Make deposits
-Now we need to make deposits (both base and quote) to `ACCOUNT1_CAP_ID` (for limit orders).
-First, prepare the `BASE_COIN_ID` variable by assigning the output of `sui client gas` (any of the values) and the run this command:
-```
-sui client call --package $PACKAGE_ID  --module book --function make_base_deposit  --args $POOL_ID $BASE_COIN_ID $ACCOUNT1_CAP_ID --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --gas-budget 10000000000 --json
-```
+```bash
+sui client call --function add_loan_funds --module smart_lender --package PACKAGE_ID --args ACC1_USDT_COIN_ID MGM_ACC_ID MGM_LOANREC_ID 150000000000 --gas-budget 10000000 --json
+```  
+- where `150000000000 == amount` to be deposited to the `loanFunds`
 
-Now deposit the quote coin:
+- On call to this function changes would have occured on the `ManagementLoanRecord`, you could access the object with command below.
+```bash
+sui client object MGM_LOANREC_ID
 ```
-sui client call --package $PACKAGE_ID  --module book --function make_quote_deposit  --args $POOL_ID $ACCOUNT1_WBTC_OBJECT_ID $ACCOUNT1_CAP_ID --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --gas-budget 10000000000 --json
+- the `loanFunds` field should be `==` to the amount deposited.
+
+- Make a call from the publishers account to add a fee class.
+```bash
+sui client call --function add_fee_class --module smart_lender --package PACKAGE_ID --args MGM_ACC_ID 650000000 9 --gas-budget 10000000 --json
 ```
-The arguments strictly match the signature of the function that is called.
+- where `650000000 == loanTimeSpan` and `9 == fee` in percentage
 
-### Place limit orders
-Let's place multiple limit orders:
+- On call to this function changes would have occured on the `ManagementAccount`, you could access the object with command below.
+```bash
+sui client object MGM_ACC_ID
+```  
+- You could see a new maping on the `feeClasses` field, copy out the `key` to fee class you just created you would be needing it for taking loans.
+- `CLASS_KEY` = `key`  
+
+- To take a loan switch to the other test account with the previous command used to switch accounts.
+- first call the function below to get an empty usdt loan coin, because we have not minted any tokens to this account or have any usdt coin related to this account.
+```bash
+sui client call --function get_empty_loan_coin --module smart_lender --package PACKAGE_ID --gas-budget 10000000 --json
+```  
+- On call to this function a coin with a zero balance would be transfered to the calling account you could access it's `objectId` from the json object returned to the terminal, on the json path where `.objectChanges[].objectType` = `0x2::coin::Coin<PACKAGE_ID::usdt::USDT>` we would need this `objectId` to collect loans.
+- `LOAN_COIN_ID` = `objectId`
+
+- Before calling the loan function we are going to be needing tokens for collateral's i.e sui tokens. Previously we requested tokens for both account's if you did not you could get sui tokens with procedure from this section `Get localnet SUI tokens`.
+
+- Issue this command below and get an sui token `objectId`. 
+```bash
+sui client objects
 ```
- sui client call --package $PACKAGE_ID  --module book --function place_limit_order  --args "$POOL_ID" 42 5000000000 200 0 true 1888824053000 0 $CLOCK_OBJECT_ID "$ACCOUNT1_CAP" --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --gas-budget 10000000000 --json
- 
- sui client call --package $PACKAGE_ID  --module book --function place_limit_order  --args "$POOL_ID" 42 5000000000 300 0 true 1888824053000 0 $CLOCK_OBJECT_ID "$ACCOUNT1_CAP" --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --gas-budget 10000000000 --json
- 
- sui client call --package $PACKAGE_ID  --module book --function place_limit_order  --args "$POOL_ID" 42 2000000000 1000 0 true 1888824053000 0 $CLOCK_OBJECT_ID "$ACCOUNT1_CAP" --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --gas-budget 10000000000 --json
- 
- sui client call --package $PACKAGE_ID  --module book --function place_limit_order  --args "$POOL_ID" 42 20000000000 1000 0 false 1888824053000 0 $CLOCK_OBJECT_ID "$ACCOUNT1_CAP" --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --gas-budget 10000000000 --json
+- You would have a list of objects, access the coin objects and get any with enough sui tokens for a collateral, to access an object issue this command:
+```bash
+sui client object objectId
 ```
-where:
-- `1888824053000` is a timestamp somewhere in the future, to avoid order expiration for the sake of simplicity
-- `42` is an id of the order, can be any number.
+- `COLLATERAL_COIN_ID` = `objectId`
 
-Notice that these commands are mostly the same except for the arguments for `priect`, `quantity` and `is_bid`.
+- Take a loan
 
-`is_bid` indicated whether you want to sell or buy assets. More details here: [2.1.4 Place Limit Order](https://docs.sui-deepbook.com/deepbook-sdk/trade-and-swap).
-
-### Place market order
-Now we need to place a market order to buy/sell assets. We are going to do this using our secondary account.
-
-First, switch to the secondary account:
+```bash
+sui client call --function take_loan --module smart_lender --package PACKAGE_ID  --args COLLATERAL_COIN_ID  LOAN_COIN_ID MGM_LOANREC_ID MGM_ACC_ID 20000000000 CLASS_KEY`  --gas-budget 10000000 --json
 ```
-sui client switch --address <ADDRESS>
+- Where `loanAmount == 20000000000` and would equal 80% of the collateral.
+
+- On call to this function a json object would be returned to the terminal and some changes would have occured on the `ManagementLoanRecord`,`LOAN_COIN_ID object` e.t.c, you could access the objects with previous commands and see the changes, but what we really need is the object transfered to the calling account i.e on the object changes where `.objectChanges[].objectType` = `PACKAGE_ID::smart_lender::LoanToClient`, get the `objectId` abd access the object. You could see the new loan information on the object. We would need this `objectId` when we want to repay the loan.
+- `LOAN_TO_CLIENT_ID` = `objectId`
+
+- Repay a loan
+- To repay a loan we would be needing enough usdt tokens to cover both loan and fee and our collected loan would not be enough, so we would need to switch to the publishers account and mint usdt tokens to the current active account. First switch to the publishers account with the previous command to switch accounts and call this function.
+```bash
+sui client call --function mint --module usdt --package PACKAGE_ID --args TREASURY_CAP_ID 80000000000 TEST_ACC2_ADDRESS  --gas-budget 10000000 --json
+```
+- where `amount == 80000000000` i.e amount to be minted to recipient and `recipient == TEST_ACC2_ADDRESS`
+
+- On call to this function the minted coin would be transfered to the recipient you could access its `objectId` from the json object returned to the terminal, on this json path where `.objectChanges[].objectType` = `0x2::coin::Coin<PACKAGE_ID::usdt::USDT>` we would need this `objectId` to pay-back loans. You could use the previous `COLLATERAL_COIN_ID` to collect your collateral.
+
+- `TOKENFORPAY_ID` = `objectId`
+
+- Now switch back to the test account owning the loan and call the repay function:
+
+```bash
+sui client call --function pay_loan --module smart_lender --package PACKAGE_ID  --args TOKENFORPAY_ID COLLATERAL_COIN_ID MGM_LOANREC_ID  LOAN_TO_CLIENT_ID  --gas-budget 10000000 --json
 ```
 
-Now place the order:
+- On call to this function a json object would be returned to the terminal and some changes would have occured on the `ManagementLoanRecord`,`TOKENFORPAY_ID object`, `COLLATERAL_COIN_ID object` `LOAN_TO_CLIENT_ID object` e.t.c, you could access the objects with previous commands and see the changes. All balances should be as expected, except for the fee balance in the `ManagementLoanRecord` object that would increase by 3% if you waisted some time to repay the loan.
+
+## Other Test Function calls
+
+- `remove_loan_from_record`
+```bash
+sui client call --function remove_loan_from_record --module smart_lender --package PACKAGE_ID  --args  MGM_ACC_ID MGM_LOANREC_ID  CLIENT_ADDRESS LOAN_KEY  --gas-budget 10000000 --json
 ```
-sui client call --package $PACKAGE_ID  --module book --function place_base_market_order  --args $POOL_ID $ACCOUNT2_CAP $SUI_COIN_ID 942 "false" $CLOCK_OBJECT_ID --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --gas-budget 10000000000 --json
+- Where `LOAN_KEY` is the key to the loan in record. Could be accessed from entries in `ManagementLoanRecord`|`clientLoans`.
+
+- `remove_fee`
+```bash
+sui client call --function remove_fee --module smart_lender --package PACKAGE_ID  --args  MGM_ACC_ID FEE_KEY --gas-budget 10000000 --json
 ```
-where:
-- `942` is an id of the order, can be any number
+- Where `FEE_KEY` is the key to the feeClass in record. Could be accessed from entries in `ManagementAccount`|`feeClass`.
 
-Check the output of this command and find the `balanceChanges` array where the balance changes will be listed, you should see the exchanged assets. Also, you can double-check this in the wallet app.
-The amount of tokens won't be precisly the number you expect because there is a deepbook fee, more details [here](https://docs.sui-deepbook.com/deepbook-fee-structure).
-
-More info about the market orders can be found [here](https://docs.sui-deepbook.com/deepbook-sdk/trade-and-swap#2.2-place-market-order).
-
-### Swap order
-Now let's try to run a swap order. 
-Re-run the commands the place limit orders (using the first account) and the switch back to the secondary account, and run the swap order:
-
-```
-sui client call --package $PACKAGE_ID  --module book --function swap_exact_base_for_quote  --args "$POOL_ID" 42 $ACCOUNT2_CAP 1500 $BASE_COIN_ID $CLOCK_OBJECT_ID --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --gas-budget 10000000000 --json
-```
-where:
-- `BASE_COIN_ID` is the id of the SUI coin, get the value from `sui client gas --json`
-- `42` is an id of the order, can be any number
-
-Check the output of this command and find the `balanceChanges` array where the balance changes will be listed, you should see the exchanged assets. Also, you can double-check this in the wallet app.
-
-### Withdrap from the account cap
-
-After you deposited either base or quote assets you can withdraw them back to your main address:
-
-#### withdraw base
-```
-sui client call --package $PACKAGE_ID  --module book --function withdraw_base --args "$POOL_ID" 100 $ACCOUNT2_CAP --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --gas-budget 10000000000 --json
+- `delete_loan`
+```bash
+sui client call --function delete_loan --module smart_lender --package PACKAGE_ID  --args  LOAN_TO_CLIENT_ID  --gas-budget 10000000 --json
 ```
 
-#### withdraw quote
+- `withdraw_returned_loans` 
+```bash
+sui client call --function withdraw_returned_loans --module smart_lender --package   --args TO_COIN_ID MGM_ACC_ID MGM_LOANREC_ID amount  --gas-budget 10000000 --json
 ```
-sui client call --package $PACKAGE_ID  --module book --function withdraw_quote --args "$POOL_ID" 100 $ACCOUNT2_CAP --type-args $BASE_COIN_TYPE $QUOTE_COIN_TYPE --gas-budget 10000000000 --json
+
+- `withdraw_paid_fees` 
+```bash
+sui client call --function withdraw_paid_fees --module smart_lender --package   --args TO_COIN_ID MGM_ACC_ID MGM_LOANREC_ID amount  --gas-budget 10000000 --json
+```
+
+- `merge_balances_sui` 
+```bash
+sui client call --function merge_balances_sui --module smart_lender --package   --args TO_KEEP_COIN_ID TO_TEAR_COIN_ID --gas-budget 10000000 --json
+```
+
+- `merge_balances_usd` 
+```bash
+sui client call --function merge_balances_usd --module smart_lender --package   --args TO_KEEP_COIN_ID TO_TEAR_COIN_ID --gas-budget 10000000 --json
+```
+
+- `transfer_sui` 
+```bash
+sui client call --function transfer_sui --module smart_lender --package   --args FROM_COIN_ID RECIPIENT_ADDRESS amount --gas-budget 10000000 --json
+```
+
+- `transfer_usd` 
+```bash
+sui client call --function transfer_usd --module smart_lender --package   --args FROM_COIN_ID RECIPIENT_ADDRESS amount --gas-budget 10000000 --json
 ```
