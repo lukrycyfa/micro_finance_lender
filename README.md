@@ -153,7 +153,7 @@ curl --location --request POST 'http://127.0.0.1:9123/gas' --header 'Content-Typ
 sui client active-address
 ```
 
-- You can switch to the other genrated address by running this command:
+- You can switch to the address you will be using to publish by running this command:
 ```bash
 sui client switch --address <ADDRESS>
 ```
