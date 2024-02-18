@@ -1,4 +1,4 @@
-# SMART_MICROFINANCE_LENDER
+# MICRO_FINANCE_LENDER
 - On this project is a Base example Lender Contract which could be implemented in a blockchain ecosystem where value is of essence and urgency need to be attended to. Having implementations for gaining profits while satisfying clients urgent need with risks of losing borrowed tokens at zero. Basically lending and paying back tokens from this move contract demands a lender to provide a sui token with a balance enough to cover a collateral which is 20% plus the loaned amount to guaranty a paid back over a period of time at a fee in percentages. Assuming the Sui token tends gain value in the market and the example usdt coin is a stable coin. Other utilities and implementations include... transfers, keeping records of lenders, balances and more.
 
 ## Disclaimer: Use of Unaudited Code for Educational Purposes Only
