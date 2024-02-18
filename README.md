@@ -1,5 +1,5 @@
 # SMART_MICROFINANCE_LENDER
-- On this project is a Base example Lender Contract which could be implemented in a blockchain ecosystem where value is of essencence and urgency need to be attended to. Having implementations for gaining profits while satisfying clients urgents need with risks of loosing borrowed tokens at zero. Basically lending and paying back tokens from this move contract demands a lender to provide a sui token with a balance enough to cover a collateral wich is 20% plus the loned amount to guranty a paid back over a period of time at a fee in percentages. Assuming the Sui token tends gain vlaue in the market and the example usdt coin is a stable coin. and having other utilities and implementations for tranfers, keeping records of lenders, balances and more.
+- On this project is a Base example Lender Contract which could be implemented in a blockchain ecosystem where value is of essence and urgency need to be attended to. Having implementations for gaining profits while satisfying clients urgent need with risks of losing borrowed tokens at zero. Basically lending and paying back tokens from this move contract demands a lender to provide a sui token with a balance enough to cover a collateral which is 20% plus the loaned amount to guaranty a paid back over a period of time at a fee in percentages. Assuming the Sui token tends gain value in the market and the example usdt coin is a stable coin. And having other utilities and implementations for transfers, keeping records of lenders, balances and more
 
 ## Disclaimer: Use of Unaudited Code for Educational Purposes Only
 This code is provided strictly for educational purposes and has not undergone any formal security audit. 
@@ -18,7 +18,7 @@ Before using this code, it is recommended to consult with a qualified profession
 
 ### Techstacks and Dependencies Required to Use or Test the Micro_finance_lender Contract.
 
-- The setup procedure here covers installations on Ubuntu and Github Codespaces(Recommended) for simplycity. You could refer to the tutorial Setup section from [Sui DeepBook Tutorial](https://dacade.org/communities/sui/challenges/19885730-fb83-477a-b95b-4ab265b61438/learning-modules/c9e21ff5-e7b3-4583-b21c-00c7176c10cc) or [sui docs](https://docs.sui.io/guides/developer/getting-started/sui-install), for installation on other platforms. 
+- The setup procedure here covers installations on Ubuntu and Github Codespaces(Recommended) for simplycity. You could refer to the tutorial Setup from the [Sui DeepBook Tutorial](https://dacade.org/communities/sui/challenges/19885730-fb83-477a-b95b-4ab265b61438/learning-modules/c9e21ff5-e7b3-4583-b21c-00c7176c10cc) or [sui docs](https://docs.sui.io/guides/developer/getting-started/sui-install), for installation on other platforms. 
 
 #### Installation on Ubuntu/Github Codespaces:
 
