@@ -39,6 +39,7 @@ cd micro_finance_lender
 ```
 
 - Install rust and cargo with the command below:
+    - If you run into a `No such file or directory (os error 2)` while installing on codespaces issue the command below before installing rust and cargo:
 ```bash
 mkdir -p ~/.config/fish/conf.d/
 ```
@@ -169,6 +170,7 @@ sui client switch --address <ADDRESS>
 sui move build
 ```
 - After the succesfull build you could go ahead and publish the contract:
+    - Only use the  `--skip-dependency-verification` if you run into on-chain and local dependency inconsistency
 ```bash
 sui client publish --skip-dependency-verification --gas-budget 100000000 --json
 ```
