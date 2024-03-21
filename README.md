@@ -39,12 +39,12 @@ cd micro_finance_lender
 ```
 
 - Install rust and cargo with the command below:
-    - If you run into a `No such file or directory (os error 2)` while installing on codespaces issue the command below before installing rust and cargo:
-```bash
-mkdir -p ~/.config/fish/conf.d/
-```
 ```bash
 curl https://sh.rustup.rs -sSf | sh
+```
+- If you run into a `No such file or directory (os error 2)` while installing on codespaces issue the command below before installing rust and cargo:
+```bash
+mkdir -p ~/.config/fish/conf.d/
 ```
 
 - Add the path below to env with this command:
