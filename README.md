@@ -32,13 +32,16 @@ sudo apt update
 sudo apt install curl git-all cmake gcc libssl-dev pkg-config libclang-dev libpq-dev build-essential -y
 ```
 
-- Get the project from GitHub with the command below:
+- Get the project from GitHub if your working locally with the command below:
 ```bash
 git clone https://github.com/lukrycyfa/micro_finance_lender.git
 cd micro_finance_lender
 ```
 
 - Install rust and cargo with the command below:
+```bash
+mkdir -p ~/.config/fish/conf.d/
+```
 ```bash
 curl https://sh.rustup.rs -sSf | sh
 ```
@@ -167,7 +170,7 @@ sui move build
 ```
 - After the succesfull build you could go ahead and publish the contract:
 ```bash
-sui client publish --gas-budget 100000000 --json
+sui client publish --skip-dependency-verification --gas-budget 100000000 --json
 ```
 #### Testing The Contract. 
 
