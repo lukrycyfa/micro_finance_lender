@@ -170,7 +170,7 @@ sui client switch --address <ADDRESS>
 sui move build
 ```
 - After the succesfull build you could go ahead and publish the contract:
-    - Only use the  `--skip-dependency-verification` if you run into on-chain and local dependency inconsistency
+    - Only use the  `--skip-dependency-verification` flag if you run into on-chain and local dependency inconsistency
 ```bash
 sui client publish --skip-dependency-verification --gas-budget 100000000 --json
 ```
